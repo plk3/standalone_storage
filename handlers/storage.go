@@ -60,7 +60,7 @@ func UploadFile(c *gin.Context) {
 	// DB Record
 	fileRecord := models.File{
 		ID:          id,
-		Filename:    fileHeader.Filename,
+		Filename:    safeFilename,
 		ContentType: fileHeader.Header.Get("Content-Type"),
 		Size:        fileHeader.Size,
 		Tags:        cleanTags,
