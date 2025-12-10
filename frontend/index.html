@@ -62,6 +62,10 @@
     <div class="form-group" style="margin-bottom:1rem;">
         <input type="text" id="tagFilter" placeholder="Filter tags..." onkeyup="filterTags()" style="font-size:0.9rem;">
     </div>
+    <div class="sort-controls">
+        <label><input type="radio" name="sortTags" value="name" checked onchange="filterTags()"> Name</label>
+        <label><input type="radio" name="sortTags" value="count" onchange="filterTags()"> Frequency</label>
+    </div>
     <div class="tag-list" id="sidebar-tag-list">
         <!-- Tags injected here -->
     </div>

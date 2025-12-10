@@ -190,19 +190,24 @@ func GetTags(c *gin.Context) {
 	var files []models.File
 	db.DB.Select("tags").Find(&files)
 
-	tagMap := make(map[string]bool)
+	tagFreq := make(map[string]int)
 	for _, f := range files {
 		for _, t := range f.Tags {
 			t = strings.TrimSpace(t)
 			if t != "" {
-				tagMap[t] = true
+				tagFreq[t]++
 			}
 		}
 	}
 
-	var tags []string
-	for t := range tagMap {
-		tags = append(tags, t)
+	type TagResponse struct {
+		Name  string `json:"name"`
+		Count int    `json:"count"`
+	}
+
+	var tags []TagResponse
+	for t, count := range tagFreq {
+		tags = append(tags, TagResponse{Name: t, Count: count})
 	}
 
 	c.JSON(http.StatusOK, tags)

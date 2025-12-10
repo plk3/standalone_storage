@@ -21,7 +21,7 @@ async function loadTags() {
         const res = await fetch(`${API_URL}/tags`);
         if (res.ok) {
             availableTags = await res.json();
-            renderTagsPanel(availableTags);
+            filterTags(); // Initial render with sort and no filter
         }
     } catch (e) { console.error("Failed to load tags", e); }
 }
@@ -30,13 +30,31 @@ async function loadTags() {
 function renderTagsPanel(tags) {
     const container = document.getElementById('sidebar-tag-list');
     container.innerHTML = tags.map(t => 
-        `<span class="sidebar-tag" onclick="addTagToActiveField('${t}')">${t}</span>`
+        `<span class="sidebar-tag" onclick="addTagToActiveField('${t.name}')">
+            ${t.name} <span style="font-size:0.7em; opacity:0.7;">(${t.count})</span>
+        </span>`
     ).join('');
 }
 
 function filterTags() {
     const query = document.getElementById('tagFilter').value.toLowerCase();
-    const filtered = availableTags.filter(t => t.toLowerCase().includes(query));
+    
+    // 1. Filter
+    let filtered = availableTags.filter(t => t.name.toLowerCase().includes(query));
+
+    // 2. Sort
+    const sortType = document.querySelector('input[name="sortTags"]:checked').value;
+    filtered.sort((a, b) => {
+        if (sortType === 'count') {
+            // Count desc, then Name asc
+            if (b.count !== a.count) return b.count - a.count;
+            return a.name.localeCompare(b.name);
+        } else {
+            // Name asc
+            return a.name.localeCompare(b.name);
+        }
+    });
+
     renderTagsPanel(filtered);
 }
 
