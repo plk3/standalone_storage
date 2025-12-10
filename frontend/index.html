@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Searchable Storage</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+        <h1>Searchable Storage</h1>
+        <div style="margin-right: 5rem;">
+            <button onclick="downloadBackup()" class="btn-secondary">Download Backup</button>
+            <button onclick="document.getElementById('restoreInput').click()" class="btn-secondary" style="margin-left: 0.5rem;">Restore Backup</button>
+            <input type="file" id="restoreInput" accept="application/zip, .zip" style="display:none;" onchange="uploadRestore()">
+        </div>
+    </div>
+
+    <!-- Upload Form -->
+    <form id="uploadForm" class="upload-card">
+        <div class="form-group">
+            <label>File</label>
+            <input type="file" id="fileInput" required>
+        </div>
+
+        <div class="form-group">
+            <label>Tags (comma separated)</label>
+            <input type="text" id="tagsInput" placeholder="e.g. work, design">
+        </div>
+        <button type="submit" class="btn-primary">Upload</button>
+    </form>
+
+    <!-- Search -->
+    <div style="margin-bottom: 2rem;">
+        <input type="text" id="searchInput" placeholder="Search tags (OR)... e.g. blue, sky" onkeyup="debounceSearch()" style="width: 100%; padding: 0.75rem;">
+    </div>
+
+    <!-- Grid -->
+    <div id="fileGrid" class="grid">
+        <!-- Cards injected here -->
+    </div>
+    <!-- Load More Button -->
+    <!-- Sentinel for Infinite Scroll -->
+    <div id="sentinel" style="text-align: center; margin: 2rem 0; height: 50px;">
+        <span id="loading-indicator" style="display:none; color:#64748b;">Loading...</span>
+    </div>
+</div>
+
+<!-- Floating Toggle Button -->
+<div class="sidebar-toggle-btn" onclick="toggleSidebar()" title="Open Tag Library">
+    #
+</div>
+
+<!-- Tag Sidebar -->
+<div id="tag-sidebar">
+    <div class="sidebar-header">
+        <h2>Tag Library</h2>
+        <button onclick="toggleSidebar()" class="btn-sm btn-secondary">✕</button>
+    </div>
+    <div class="form-group" style="margin-bottom:1rem;">
+        <input type="text" id="tagFilter" placeholder="Filter tags..." onkeyup="filterTags()" style="font-size:0.9rem;">
+    </div>
+    <div class="tag-list" id="sidebar-tag-list">
+        <!-- Tags injected here -->
+    </div>
+    <div style="font-size:0.75rem; color:#64748b; margin-top:0.5rem; text-align:center;">
+        Click to add tag to active field
+    </div>
+</div>
+
+<!-- Toast -->
+<div id="toast">Copied to clipboard!</div>
+
+<!-- Modal for full image preview -->
+<div id="preview-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);justify-content:center;align-items:center;z-index:1000;flex-direction:column;">
+    <div style="position:relative;width:90%;height:90%;display:flex;align-items:center;justify-content:center;">
+        <button onclick="prevImage()" style="position:absolute;left:10px;padding:1rem;background:rgba(255,255,255,0.2);color:white;border:none;border-radius:50%;cursor:pointer;font-size:2rem;z-index:10;">&#10094;</button>
+        <img id="modal-img" src="" alt="Preview" style="max-width:100%;max-height:100%;object-fit:contain;"/>
+        <video id="modal-video" controls autoplay style="max-width:100%;max-height:100%;object-fit:contain;display:none;"></video>
+        <button onclick="nextImage()" style="position:absolute;right:10px;padding:1rem;background:rgba(255,255,255,0.2);color:white;border:none;border-radius:50%;cursor:pointer;font-size:2rem;z-index:10;">&#10095;</button>
+    </div>
+    <div style="color:white;margin-top:10px;" id="modal-caption"></div>
+    <button onclick="closeModal()" style="position:absolute;top:20px;right:20px;padding:0.5rem 1rem;background:#fff;border:none;border-radius:4px;cursor:pointer;">Close</button>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
