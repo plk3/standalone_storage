@@ -91,7 +91,7 @@ func SearchFiles(c *gin.Context) {
 	tx := db.DB.Model(&models.File{})
 
 	if query != "" {
-		terms := strings.Fields(query)
+		terms := strings.Fields(strings.ReplaceAll(query, ",", " "))
 		if len(terms) > 0 {
 			var conditions []string
 			var args []interface{}

@@ -82,7 +82,7 @@ window.addTagToActiveField = (tag) => {
 
   if (currentVal.length > 0) {
     currentVal = currentVal.trimEnd();
-    if (isTagInput) {
+    if (isTagInput || lastFocusedInput.id === "searchInput") {
       if (!currentVal.endsWith(",")) {
         currentVal += ",";
       }
@@ -154,7 +154,6 @@ async function loadFiles(reset = false) {
   }
 
   const query = document.getElementById("searchInput").value;
-  const btnLoadMore = document.getElementById("load-more-container");
 
   try {
     const res = await fetch(
