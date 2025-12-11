@@ -91,9 +91,16 @@ func SearchFiles(c *gin.Context) {
 	tx := db.DB.Model(&models.File{})
 
 	if query != "" {
-		// SQLite JSON search: LIKE '%"tag"%'
-		// This is a simple approximation for exact match in JSON array ["a","b"]
-		tx = tx.Where("tags LIKE ?", "%\""+query+"\"%")
+		terms := strings.Fields(query)
+		if len(terms) > 0 {
+			var conditions []string
+			var args []interface{}
+			for _, term := range terms {
+				conditions = append(conditions, "tags LIKE ?")
+				args = append(args, "%\""+term+"\"%")
+			}
+			tx = tx.Where(strings.Join(conditions, " OR "), args...)
+		}
 	}
 
 	tx.Order("created_at desc").Limit(limit).Offset(offset).Find(&files)
